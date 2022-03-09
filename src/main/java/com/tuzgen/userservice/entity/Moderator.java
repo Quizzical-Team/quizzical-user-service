@@ -1,0 +1,26 @@
+package com.tuzgen.userservice.entity;
+
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.persistence.*;
+
+@Entity
+@Table(name = "moderators")
+//@PrimaryKeyJoinColumn(name = "user")
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class Moderator extends User {
+    @Column(name = "phoneNumber", nullable = true)
+    private String phoneNumber;
+
+    @ManyToOne
+    @JoinColumn(name = "permission_level_id")
+    private ModeratorPermission permissionLevel;
+}

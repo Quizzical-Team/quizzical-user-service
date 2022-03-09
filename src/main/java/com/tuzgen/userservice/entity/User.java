@@ -1,56 +1,48 @@
 package com.tuzgen.userservice.entity;
 
+import lombok.*;
+import org.hibernate.Hibernate;
+
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
-    @Id @GeneratedValue
-    private Long id;
+@Inheritance(strategy = InheritanceType.JOINED)
 
-    @Column(name = "name", nullable = false)
-    private String name;
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class User extends BaseEntity{
+    @Column(name = "userName", unique = true, nullable = false)
+    private String userName;
 
-    public User() {}
+    @Column(name = "email", unique = true, nullable = false)
+    private String email;
 
-    public User(String name) {
-        this.name = name;
-    }
+    @Column(name = "password", nullable = false)
+    private String password;
 
-    public User(Long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
+    @OneToMany(mappedBy = "user",
+            fetch = FetchType.EAGER,
+            cascade = CascadeType.REMOVE)
+    private Set<Token> tokens = new HashSet<>();
 
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
+        User user = (User) o;
+        return super.getId() != null && Objects.equals(super.getId(), user.getId());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(this.id, this.name);
-    }
-
-    @Override
-    public boolean equals(Object u) {
-        if (this == u)
-            return true;
-        if (!(u instanceof User))
-            return false;
-        return this.id.equals(((User) u).id);
-    }
-
-    @Override
-    public String toString() {
-        return "User{" + "id=" + this.id + ", name='" + this.name + "'}";
+        return getClass().hashCode();
     }
 }
