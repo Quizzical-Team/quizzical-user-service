@@ -1,6 +1,6 @@
 package com.tuzgen.userservice.services;
 
-import com.tuzgen.userservice.entity.User;
+import com.tuzgen.userservice.entities.User;
 
 import java.util.List;
 
