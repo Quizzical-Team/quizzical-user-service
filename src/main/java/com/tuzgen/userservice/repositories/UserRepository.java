@@ -1,6 +1,6 @@
-package com.tuzgen.userservice.repository;
+package com.tuzgen.userservice.repositories;
 
-import com.tuzgen.userservice.entity.User;
+import com.tuzgen.userservice.entities.User;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 

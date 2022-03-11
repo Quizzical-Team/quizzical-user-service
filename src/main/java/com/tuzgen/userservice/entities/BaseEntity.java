@@ -1,4 +1,4 @@
-package com.tuzgen.userservice.entity;
+package com.tuzgen.userservice.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 @MappedSuperclass
 @Getter
@@ -20,8 +20,8 @@ public class BaseEntity {
     private Long id;
 
     @Column(name = "createdAt", nullable = false)
-    private final String createdAt = new Date().toString();;
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Column(name = "updatedAt", nullable = false)
-    private String updatedAt = new Date().toString();
+    private final LocalDateTime updatedAt = LocalDateTime.now();
 }

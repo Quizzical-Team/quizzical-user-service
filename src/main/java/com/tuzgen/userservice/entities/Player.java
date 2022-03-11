@@ -1,4 +1,4 @@
-package com.tuzgen.userservice.entity;
+package com.tuzgen.userservice.entities;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,7 +7,6 @@ import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
 @Entity
@@ -22,7 +21,7 @@ public class Player extends User {
     @Column(name = "matchmakingRatio", nullable = false)
     private Integer matchmakingRatio = 200;
 
-    @Column(name = "isBanned", nullable = true)
+    @Column(name = "isBanned")
     private Boolean isBanned = false;
 
     // todo: match history

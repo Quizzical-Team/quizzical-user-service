@@ -1,4 +1,4 @@
-package com.tuzgen.userservice.entity;
+package com.tuzgen.userservice.entities;
 
 import lombok.*;
 import org.hibernate.Hibernate;

@@ -1,4 +1,4 @@
-package com.tuzgen.userservice.exception;
+package com.tuzgen.userservice.exceptions;
 
 import lombok.Getter;
 import org.springframework.http.HttpStatus;

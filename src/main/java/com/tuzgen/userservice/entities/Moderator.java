@@ -1,4 +1,4 @@
-package com.tuzgen.userservice.entity;
+package com.tuzgen.userservice.entities;
 
 
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Moderator extends User {
-    @Column(name = "phoneNumber", nullable = true)
+    @Column(name = "phoneNumber")
     private String phoneNumber;
 
     @ManyToOne
