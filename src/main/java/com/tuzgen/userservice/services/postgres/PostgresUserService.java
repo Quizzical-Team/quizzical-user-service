@@ -3,8 +3,12 @@ package com.tuzgen.userservice.services.postgres;
 import com.tuzgen.userservice.entities.User;
 import com.tuzgen.userservice.exceptions.UserNotFoundException;
 import com.tuzgen.userservice.repositories.UserRepository;
+import com.tuzgen.userservice.security.UserPrincipal;
 import com.tuzgen.userservice.services.UserService;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,6 +28,17 @@ public class PostgresUserService implements UserService {
         return user.orElseThrow(() -> new UserNotFoundException(id));
     }
 
+    public User getUser(String username) {
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
+        return new UserPrincipal(user);
+    }
+
     @Override
     public List<User> getUsersPaginated(Integer pageNo, Integer pageSize) {
         return userRepository.findAll(PageRequest.of(pageNo, pageSize)).toList();
@@ -35,21 +50,23 @@ public class PostgresUserService implements UserService {
     }
 
     @Override
-    public Boolean logInWithUsernameAndPassword(String userName, String password) {
+    public Boolean logInWithUsernameAndPassword(String username, String password) {
+        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
 
-        return null;
+        return false;
     }
 
     @Override
-    public User addUser(User user) {
-        return userRepository.save(user);
+    public void addUser(User user) {
+        user.setPassword(new BCryptPasswordEncoder(11).encode(user.getPassword()));
+        userRepository.save(user);
     }
 
     @Override
     public User updateUser(Long id, User user) {
         return userRepository.findById(id)
                 .map(u -> {
-                    u.setUserName(user.getUserName());
+                    u.setUsername(user.getUsername());
                     return userRepository.save(u);
                 })
                 .orElseThrow(() -> new UserNotFoundException(id));
@@ -63,11 +80,11 @@ public class PostgresUserService implements UserService {
 
     @Override
     public List<User> addUsers(List<User> users) {
-        return null;
+        return userRepository.saveAll(users);
     }
 
     @Override
     public void deleteUsers(List<Long> ids) {
-
+        userRepository.deleteAllById(ids);
     }
 }

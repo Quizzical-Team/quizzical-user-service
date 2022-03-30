@@ -1,5 +1,6 @@
 package com.tuzgen.userservice.controllers;
 
+import com.tuzgen.userservice.dtos.UserDto;
 import com.tuzgen.userservice.entities.User;
 import com.tuzgen.userservice.exceptions.UserNotFoundException;
 import com.tuzgen.userservice.services.UserService;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequestMapping("/api/v1/users")
@@ -22,7 +22,7 @@ public class UserController {
     }
 
     // not secure
-    @GetMapping({"", "/"})
+    @GetMapping({""})
     public List<User> showUsersPaginated(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
         return userService.getUsersPaginated(pageNo, pageSize);
     }
@@ -34,11 +34,10 @@ public class UserController {
     }
 
     // secure -> admin privilege
-    @PostMapping({"", "/"})
-    public ResponseEntity<User> createNewUser(@RequestBody User newUser) {
-        userService.addUser(newUser);
-
-        return new ResponseEntity<>(newUser, HttpStatus.CREATED);
+    @PostMapping({""})
+    public ResponseEntity<UserDto> createNewUser(@RequestBody User user) {
+        userService.addUser(user);
+        return new ResponseEntity<>(new UserDto(user), HttpStatus.CREATED);
     }
 
     // not secure

@@ -4,13 +4,16 @@ import com.tuzgen.userservice.entities.User;
 import com.tuzgen.userservice.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.List;
 
 @Slf4j
 @Configuration
+@ComponentScan("com.tuzgen.userservice.repositories")
 public class LoadDatabase {
 
     private final UserRepository repository;
@@ -26,9 +29,9 @@ public class LoadDatabase {
 
         log.info("Saving new user...");
         this.repository.save(User.builder()
-                .userName("oguztuzgen")
+                .username("oguztuzgen")
                 .email("oguztuzgen@gmail.com")
-                .password("1231432").build());
+                .password(new BCryptPasswordEncoder().encode("123123")).build());
 //        this.repository.save(User.builder()
 //                .userName("oguztuzgen")
 //                .email("oguztuzgen@gmail.com")

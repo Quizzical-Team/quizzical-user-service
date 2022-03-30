@@ -4,9 +4,7 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -18,9 +16,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User extends BaseEntity{
-    @Column(name = "userName", unique = true, nullable = false)
-    private String userName;
+public class User extends BaseEntity {
+    // ~ JPA items
+    @Column(name = "user_name", unique = true, nullable = false)
+    private String username;
 
     @Column(name = "email", unique = true, nullable = false)
     private String email;
@@ -28,10 +27,17 @@ public class User extends BaseEntity{
     @Column(name = "password", nullable = false)
     private String password;
 
+    @Column(name = "is_banned")
+    private Boolean isBanned = false;
+
     @OneToMany(mappedBy = "user",
             fetch = FetchType.EAGER,
             cascade = CascadeType.REMOVE)
     private Set<Token> tokens = new HashSet<>();
+
+    public void addUserToken(Token token) {
+        tokens.add(token);
+    }
 
     @Override
     public boolean equals(Object o) {

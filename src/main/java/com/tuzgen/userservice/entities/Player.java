@@ -18,11 +18,9 @@ import javax.persistence.Table;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Player extends User {
-    @Column(name = "matchmakingRatio", nullable = false)
+    @Column(name = "matchmaking_ratio", nullable = false)
     private Integer matchmakingRatio = 200;
 
-    @Column(name = "isBanned")
-    private Boolean isBanned = false;
 
     // todo: match history
 
