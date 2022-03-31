@@ -16,7 +16,7 @@ import java.util.Optional;
 
 @Service
 public class PostgresUserService implements UserService {
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
     public PostgresUserService(UserRepository userRepository) {
         this.userRepository = userRepository;
