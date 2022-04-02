@@ -3,11 +3,8 @@ package com.tuzgen.userservice.services.postgres;
 import com.tuzgen.userservice.entities.User;
 import com.tuzgen.userservice.exceptions.UserNotFoundException;
 import com.tuzgen.userservice.repositories.UserRepository;
-import com.tuzgen.userservice.security.UserPrincipal;
 import com.tuzgen.userservice.services.UserService;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,12 +28,6 @@ public class PostgresUserService implements UserService {
     public User getUser(String username) {
         Optional<User> user = userRepository.findByUsername(username);
         return user.orElseThrow(UserNotFoundException::new);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-        return new UserPrincipal(user);
     }
 
     @Override

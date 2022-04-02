@@ -17,7 +17,6 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 public class User extends BaseEntity {
-    // ~ JPA items
     @Column(name = "user_name", unique = true, nullable = false)
     private String username;
 

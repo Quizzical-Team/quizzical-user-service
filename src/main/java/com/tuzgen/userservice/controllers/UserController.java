@@ -7,6 +7,7 @@ import com.tuzgen.userservice.services.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,9 +23,17 @@ public class UserController {
     }
 
     // not secure
-    @GetMapping({""})
-    public List<User> showUsersPaginated(@RequestParam(defaultValue = "0") Integer pageNo, @RequestParam(defaultValue = "10") Integer pageSize) {
+    @GetMapping({"/page"})
+    public List<User> showUsersPaginated(
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
         return userService.getUsersPaginated(pageNo, pageSize);
+    }
+
+    // not secure
+    @GetMapping("/{userId}")
+    public User showUserInfo(@PathVariable("userId") Long userId) throws UserNotFoundException {
+        return userService.getUser(userId);
     }
 
     // not secure
@@ -40,20 +49,16 @@ public class UserController {
         return new ResponseEntity<>(new UserDto(user), HttpStatus.CREATED);
     }
 
-    // not secure
-    @GetMapping("/{userId}")
-    public User showUserInfo(@PathVariable("userId") Long userId) throws UserNotFoundException {
-        return userService.getUser(userId);
-    }
-
     // secure -> admin or user privilege
     @PutMapping("/{userId}")
+    @PreAuthorize("#userId == principal")
     public User updateUser(@RequestBody User newUser, @PathVariable("userId") Long userId) {
         return userService.updateUser(userId, newUser);
     }
 
     // secure -> admin or user privilege
     @DeleteMapping("/{userId}")
+    @PreAuthorize("#userId == principal")
     public void deleteUser(@PathVariable("userId") Long userId) {
         userService.deleteUser(userId);
     }
