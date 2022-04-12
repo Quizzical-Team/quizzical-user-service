@@ -1,6 +1,11 @@
 package com.tuzgen.userservice.bootstrap;
 
+import com.tuzgen.userservice.entities.FriendRequest;
+import com.tuzgen.userservice.entities.Player;
 import com.tuzgen.userservice.entities.User;
+import com.tuzgen.userservice.exceptions.UserNotFoundException;
+import com.tuzgen.userservice.repositories.FriendRequestRepository;
+import com.tuzgen.userservice.repositories.PlayerRepository;
 import com.tuzgen.userservice.repositories.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -11,7 +16,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Slf4j
 @Configuration
@@ -19,29 +23,23 @@ import java.util.List;
 @Profile("dev")
 public class LoadDatabase {
 
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final PlayerRepository playerRepository;
+    private final FriendRequestRepository friendRepository;
 
-    public LoadDatabase(UserRepository repository) {
-        this.repository = repository;
+    public LoadDatabase(UserRepository userRepository, PlayerRepository playerRepository, FriendRequestRepository friendRepository) {
+        this.userRepository = userRepository;
+        this.playerRepository = playerRepository;
+        this.friendRepository = friendRepository;
     }
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {
-        this.repository.saveAll(
+        this.userRepository.saveAll(
                 new ArrayList<>() {{
                     add(User.builder()
                             .username("oguztuzgen")
                             .email("oguztuzgen@gmail.com")
-                            .password(new BCryptPasswordEncoder().encode("123123")).build()
-                    );
-                    add(User.builder()
-                            .username("tuzgosh")
-                            .email("tuzgosh@gmail.com")
-                            .password(new BCryptPasswordEncoder().encode("123123")).build()
-                    );
-                    add(User.builder()
-                            .username("torvalds")
-                            .email("torvalds@gmail.com")
                             .password(new BCryptPasswordEncoder().encode("123123")).build()
                     );
                     add(User.builder()
@@ -51,6 +49,24 @@ public class LoadDatabase {
                     );
                 }}
         );
+
+        this.playerRepository.saveAll(
+                new ArrayList<>() {{
+                    add(new Player("torvalds", "torvalds@gmail.com", new BCryptPasswordEncoder().encode("123123")));
+                    add(new Player("tuzgosh", "tuzgosh@gmail.com", new BCryptPasswordEncoder().encode("123123")));
+                    add(new Player("yeet", "yeet@gmail.com", new BCryptPasswordEncoder().encode("123123")));
+                }}
+        );
+
+        Player p1 = playerRepository.findByUsername("torvalds").orElseThrow(UserNotFoundException::new);
+        Player p2 = playerRepository.findByUsername("yeet").orElseThrow(UserNotFoundException::new);
+
+        this.friendRepository.saveAll(
+               new ArrayList<>() {{
+                   add(FriendRequest.builder().sender(p1).receiver(p2).build());
+               }}
+        );
+
         log.info("Finished database bootstrap...");
     }
 }

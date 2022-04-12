@@ -1,7 +1,6 @@
 package com.tuzgen.userservice.entities;
 
 import lombok.*;
-import org.hibernate.Hibernate;
 
 import javax.persistence.*;
 import java.util.*;
@@ -17,13 +16,13 @@ import java.util.*;
 @AllArgsConstructor
 @Builder
 public class User extends BaseEntity {
-    @Column(name = "user_name", unique = true, nullable = false)
+    @Column(name = "user_name", unique = true)
     private String username;
 
-    @Column(name = "email", unique = true, nullable = false)
+    @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @Column(name = "is_banned")
@@ -34,20 +33,13 @@ public class User extends BaseEntity {
             cascade = CascadeType.REMOVE)
     private Set<Token> tokens = new HashSet<>();
 
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
+        this.password = password;
+    }
+
     public void addUserToken(Token token) {
         tokens.add(token);
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || Hibernate.getClass(this) != Hibernate.getClass(o)) return false;
-        User user = (User) o;
-        return super.getId() != null && Objects.equals(super.getId(), user.getId());
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
     }
 }

@@ -1,17 +1,13 @@
 package com.tuzgen.userservice.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.tuzgen.userservice.configuration.GamePropertiesConfig;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Entity
 @Table(name = "players")
-//@PrimaryKeyJoinColumn(name = "user")
 
 @Getter
 @Setter
@@ -19,9 +15,35 @@ import javax.persistence.Table;
 @AllArgsConstructor
 public class Player extends User {
     @Column(name = "matchmaking_ratio", nullable = false)
-    private Integer matchmakingRatio = 200;
+    private Integer matchmakingRatio = GamePropertiesConfig.startingMatchmakingRatio;
 
+    public Player(String username, String email, String password) {
+        super(username, email, password);
+    }
+
+    @ManyToMany
+    @JoinTable(
+            name = "friends",
+            joinColumns = @JoinColumn(name = "player_id"),
+            inverseJoinColumns = @JoinColumn(name = "friend_id")
+    )
+//     todo: set?
+    private Set<Player> friends;
+
+    @ManyToMany
+    @JoinTable(
+            name = "friends",
+            joinColumns = @JoinColumn(name = "friend_id"),
+            inverseJoinColumns = @JoinColumn(name = "player_id")
+    )
+    private Set<Player> friendOf;
 
     // todo: match history
 
+    public void changeMMRBy(Integer amount) {
+        // clamp the MMR between max and min
+        this.matchmakingRatio = Math.max(
+                GamePropertiesConfig.minimumMatchmakingRatio,
+                Math.min(GamePropertiesConfig.maximumMatchmakingRatio, matchmakingRatio + amount));
+    }
 }

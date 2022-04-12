@@ -4,6 +4,7 @@ import com.tuzgen.userservice.entities.User;
 import com.tuzgen.userservice.exceptions.UserNotFoundException;
 import com.tuzgen.userservice.repositories.UserRepository;
 import com.tuzgen.userservice.services.UserService;
+import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -38,13 +39,6 @@ public class PostgresUserService implements UserService {
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
-    }
-
-    @Override
-    public Boolean logInWithUsernameAndPassword(String username, String password) {
-        User user = userRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
-
-        return false;
     }
 
     @Override

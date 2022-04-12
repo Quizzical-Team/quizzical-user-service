@@ -16,12 +16,12 @@ import java.time.LocalDateTime;
 public class BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "createdAt", nullable = false)
+    @Column(name = "createdAt")
     private final LocalDateTime createdAt = LocalDateTime.now();
 
-    @Column(name = "updatedAt", nullable = false)
+    @Column(name = "updatedAt")
     private final LocalDateTime updatedAt = LocalDateTime.now();
 }
