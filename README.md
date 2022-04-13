@@ -15,3 +15,5 @@ Use the api key by adding x-api-key header to your http requests.
 - Lombok
 - AssertJ
 - JUnit5
+
+docker run -d -p 5432:5432 --name quizzical-user-dev -e POSTGRES_PASSWORD=admin postgres
