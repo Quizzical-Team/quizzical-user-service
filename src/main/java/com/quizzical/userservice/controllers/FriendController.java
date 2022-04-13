@@ -19,7 +19,7 @@ public class FriendController {
 
     @GetMapping("")
     public ResponseEntity sendFriendRequest(@RequestParam("receiverId") Long receiverId, @RequestParam("senderId") Long senderId) {
-        if (friendRequestService.sendFriendRequest(receiverId, senderId)) {
+        if (friendRequestService.sendFriendRequest(senderId, receiverId)) {
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
