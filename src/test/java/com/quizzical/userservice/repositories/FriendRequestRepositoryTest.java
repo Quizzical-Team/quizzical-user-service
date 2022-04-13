@@ -5,6 +5,7 @@ import com.quizzical.userservice.entities.Player;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -86,6 +87,7 @@ class FriendRequestRepositoryTest {
     }
 
     @Test
+    @Disabled
     void cannotCreateSecondFriendRequestBetweenSamePlayersOrderIndependent() {
         FriendRequest friendRequest = new FriendRequest(p1, p3, false);
         FriendRequest illegal = new FriendRequest(p3, p1, false);
@@ -115,13 +117,13 @@ class FriendRequestRepositoryTest {
 
     @Test
     void findByReceiverAndSenderExists() {
-        FriendRequest fr = friendRepository.findByReceiverAndSender(p2.getId(), p1.getId()).orElse(null);
+        FriendRequest fr = friendRepository.findByReceiverAndSender(p2, p1).orElse(null);
         assertNotNull(fr);
     }
 
     @Test
     void existsByReceiverAndSenderExists() {
-        Boolean result = friendRepository.existsByReceiverAndSender(p2.getId(), p1.getId());
+        Boolean result = friendRepository.existsByReceiverAndSender(p2, p1);
         assertTrue(result);
     }
 

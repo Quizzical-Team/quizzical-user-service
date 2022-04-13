@@ -52,11 +52,11 @@ public class PostgresFriendRequestService implements FriendRequestService {
         if (players.size() < 2)
             return false;
 
-        if (doesFriendRequestExist(players.get(0), players.get(1)))
+        FriendRequest fr = friendRequestRepository.findByReceiverAndSender(players.get(1), players.get(0))
+                .orElse(null);
+        if (fr == null)
             return false;
 
-        FriendRequest fr = friendRequestRepository.findByReceiverAndSender(targetPlayerId, fromPlayerId)
-                .orElseThrow(() -> new RuntimeException("No friend request to respond"));
         if (response) {
             fr.setAccepted(true);
             friendRequestRepository.save(fr);
@@ -71,7 +71,7 @@ public class PostgresFriendRequestService implements FriendRequestService {
     }
 
     private Boolean doesFriendRequestExist(Player p1, Player p2) {
-        return friendRequestRepository.existsByReceiverAndSender(p1.getId(), p2.getId())
-                || friendRequestRepository.existsByReceiverAndSender(p2.getId(), p1.getId());
+        return friendRequestRepository.existsByReceiverAndSender(p1, p2)
+                || friendRequestRepository.existsByReceiverAndSender(p2, p1);
     }
 }

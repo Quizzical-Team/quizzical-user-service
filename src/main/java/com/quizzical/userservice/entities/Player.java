@@ -4,6 +4,7 @@ import com.quizzical.userservice.configuration.GamePropertiesConfig;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 @Entity
@@ -28,7 +29,7 @@ public class Player extends User {
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
 //     todo: set?
-    private Set<Player> friends;
+    private Set<Player> friends = new HashSet<>();
 
     @ManyToMany
     @JoinTable(
@@ -36,7 +37,7 @@ public class Player extends User {
             joinColumns = @JoinColumn(name = "friend_id"),
             inverseJoinColumns = @JoinColumn(name = "player_id")
     )
-    private Set<Player> friendOf;
+    private Set<Player> friendOf = new HashSet<>();
 
     // todo: match history
 
