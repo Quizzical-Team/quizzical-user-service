@@ -78,15 +78,28 @@ public class PostgresPlayerService implements PlayerService {
 
 
     @Override
-    public void fluctuateMMR(Long id, Integer amount) {
-        Player p = playerRepository.findById(id).orElseThrow(UserNotFoundException::new);
+    public Boolean fluctuateMMR(Long id, Integer amount) {
+        Player p = playerRepository.findById(id).orElse(null);
+        if (p == null)
+            return false;
         p.changeMMRBy(amount);
         playerRepository.save(p);
+        return true;
     }
 
     @Override
-    public void fluctuateMMRBatch(List<Long> ids, List<Integer> amounts) {
-        throw new NotYetImplementedException();
+    public Boolean fluctuateMMRBatch(Set<Long> ids, Collection<Integer> amounts) {
+        if (ids.size() != amounts.size())
+            return false;
+        List<Player> players = playerRepository.findAllById(ids);
+        int idx = 0;
+        for (Integer amount : amounts) {
+            players.get(idx).changeMMRBy(amount);
+            idx++;
+        }
+
+        playerRepository.saveAll(players);
+        return true;
     }
 
     @Override
