@@ -8,7 +8,9 @@ import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PostgresPlayerService implements PlayerService {
@@ -20,13 +22,17 @@ public class PostgresPlayerService implements PlayerService {
     }
 
     @Override
-    public List<Player> searchPlayersStartingWith(String username) {
+    public Set<Player> searchPlayersStartingWith(String username) {
         return playerRepository.findPlayersByUsernameIsStartingWith(username);
     }
 
     @Override
-    public Player getUser(Long id) {
+    public Set<Player> getPlayersByUsernames(Set<String> usernames) {
+        return playerRepository.findAllByUsernameList(usernames);
+    }
 
+    @Override
+    public Player getUser(Long id) {
         return playerRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 

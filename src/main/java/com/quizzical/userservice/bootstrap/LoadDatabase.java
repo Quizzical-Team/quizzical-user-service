@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 @Slf4j
 @Configuration
-@ComponentScan("com.tuzgen.userservice.repositories")
+@ComponentScan("com.quizzical.userservice.repositories")
 @Profile("dev")
 public class LoadDatabase {
 

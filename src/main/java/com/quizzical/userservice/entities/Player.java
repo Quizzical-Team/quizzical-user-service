@@ -1,5 +1,6 @@
 package com.quizzical.userservice.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.quizzical.userservice.configuration.GamePropertiesConfig;
 import lombok.*;
 
@@ -28,7 +29,7 @@ public class Player extends User {
             joinColumns = @JoinColumn(name = "player_id"),
             inverseJoinColumns = @JoinColumn(name = "friend_id")
     )
-//     todo: set?
+    @JsonIgnore
     private Set<Player> friends = new HashSet<>();
 
     @ManyToMany
@@ -37,6 +38,7 @@ public class Player extends User {
             joinColumns = @JoinColumn(name = "friend_id"),
             inverseJoinColumns = @JoinColumn(name = "player_id")
     )
+    @JsonIgnore
     private Set<Player> friendOf = new HashSet<>();
 
     // todo: match history

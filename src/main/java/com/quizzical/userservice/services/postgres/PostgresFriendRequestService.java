@@ -2,6 +2,7 @@ package com.quizzical.userservice.services.postgres;
 
 import com.quizzical.userservice.entities.FriendRequest;
 import com.quizzical.userservice.entities.Player;
+import com.quizzical.userservice.exceptions.UserNotFoundException;
 import com.quizzical.userservice.repositories.FriendRequestRepository;
 import com.quizzical.userservice.repositories.PlayerRepository;
 import com.quizzical.userservice.services.FriendRequestService;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class PostgresFriendRequestService implements FriendRequestService {
@@ -68,6 +70,11 @@ public class PostgresFriendRequestService implements FriendRequestService {
             friendRequestRepository.delete(fr);
         }
         return true;
+    }
+
+    @Override
+    public Set<Player> getFriendsOfPlayer(Long playerId, Integer pageNo, Integer pageSize) {
+        return playerRepository.findById(playerId).orElseThrow(UserNotFoundException::new).getFriends();
     }
 
     private Boolean doesFriendRequestExist(Player p1, Player p2) {
