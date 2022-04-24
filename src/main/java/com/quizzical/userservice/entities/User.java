@@ -28,7 +28,7 @@ public class User extends BaseEntity {
     @Column(name = "is_banned")
     private Boolean isBanned = false;
 
-    @OneToMany(mappedBy = "user",
+    @OneToMany(
             fetch = FetchType.EAGER,
             cascade = CascadeType.REMOVE)
     private Set<Token> tokens = new HashSet<>();

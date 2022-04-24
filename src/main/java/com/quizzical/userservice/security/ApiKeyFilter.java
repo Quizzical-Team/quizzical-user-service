@@ -8,6 +8,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Objects;
 
 @Component
 public class ApiKeyFilter extends OncePerRequestFilter {
@@ -17,7 +18,7 @@ public class ApiKeyFilter extends OncePerRequestFilter {
         String apiKeyFromHeader = request.getHeader("X-Api-Key");
         String API_KEY = System.getenv("API_KEY");
 
-        if (apiKeyFromHeader.equals(API_KEY)) {
+        if (Objects.equals(apiKeyFromHeader, API_KEY)) {
             filterChain.doFilter(request, response);
         } else {
             response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Api key not valid");

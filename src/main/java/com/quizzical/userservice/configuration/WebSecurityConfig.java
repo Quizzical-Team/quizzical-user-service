@@ -27,7 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) {
         auth.authenticationProvider(authenticationProvider());
     }
 
@@ -38,16 +38,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors().and().csrf().disable();
 
         http.authorizeRequests()
-                // * public endpoints
+
                 .antMatchers(HttpMethod.GET).permitAll()
-                .antMatchers(HttpMethod.POST).authenticated()
-//                .antMatchers(HttpMethod.PUT).authenticated()
-                .antMatchers(HttpMethod.DELETE).authenticated()
+//                .antMatchers(HttpMethod.POST).authenticated()
+//                .antMatchers(HttpMethod.DELETE).authenticated()
                 .antMatchers(HttpMethod.PUT, "/api/**/mmr").permitAll()
-//                .antMatchers(HttpMethod.GET, "**/users/page").permitAll()
-//                .antMatchers(HttpMethod.GET, "**/users/all").authenticated()
-//                .antMatchers(HttpMethod.GET, "**/users/{userId}/**").authenticated()
-//                .antMatchers(HttpMethod.POST, "**/users/**").permitAll()
+                .antMatchers("**/auth/**").permitAll()
                 .and().addFilterBefore(new ApiKeyFilter(), UsernamePasswordAuthenticationFilter.class)
                 .formLogin().and()
                 .httpBasic();

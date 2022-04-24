@@ -1,6 +1,7 @@
 package com.quizzical.userservice.entities;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -11,14 +12,8 @@ import javax.persistence.*;
 @Getter // * intentional no setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Token extends BaseEntity {
     private String tokenValue;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
