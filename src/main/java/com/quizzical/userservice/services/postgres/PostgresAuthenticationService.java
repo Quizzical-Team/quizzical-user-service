@@ -1,50 +1,47 @@
 package com.quizzical.userservice.services.postgres;
 
-import com.quizzical.userservice.dtos.CredentialsDto;
+import com.quizzical.userservice.entities.Player;
 import com.quizzical.userservice.entities.Token;
-import com.quizzical.userservice.entities.User;
+import com.quizzical.userservice.repositories.PlayerRepository;
 import com.quizzical.userservice.repositories.TokenRepository;
-import com.quizzical.userservice.repositories.UserRepository;
 import com.quizzical.userservice.security.JwtTokenUtil;
 import com.quizzical.userservice.services.AuthenticationService;
+import io.jsonwebtoken.Jwt;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 public class PostgresAuthenticationService implements AuthenticationService {
-    private final UserRepository userRepository;
-    private final TokenRepository tokenRepository;
-    private final PasswordEncoder passwordEncoder;
     private final JwtTokenUtil jwtTokenUtil;
+    private final PlayerRepository playerRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenRepository tokenRepository;
 
-    public PostgresAuthenticationService(UserRepository userRepository, TokenRepository tokenRepository, PasswordEncoder passwordEncoder, JwtTokenUtil jwtTokenUtil) {
-        this.userRepository = userRepository;
-        this.tokenRepository = tokenRepository;
-        this.passwordEncoder = passwordEncoder;
+    public PostgresAuthenticationService(JwtTokenUtil jwtTokenUtil, PlayerRepository playerRepository, PasswordEncoder passwordEncoder, TokenRepository tokenRepository) {
         this.jwtTokenUtil = jwtTokenUtil;
+        this.playerRepository = playerRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
-    public Token loginWithUsernamePassword(CredentialsDto credentialsDto) {
+    public Token loginWithUsernamePassword(String username, String password) {
+        Player p = playerRepository.findByUsername(username).orElseThrow(RuntimeException::new);
 
-        User u = userRepository.findByUsername(credentialsDto.getUsername()).orElse(null);
-        if (u == null)
+        if (!passwordEncoder.matches(password, p.getPassword())) {
             return null;
+        }
+        Token t = new Token(jwtTokenUtil.generateToken(username));
 
-        if (!passwordEncoder.matches(credentialsDto.getPassword(), u.getPassword()))
-            return null;
+        tokenRepository.save(t);
+        p.addUserToken(t);
+        playerRepository.save(p);
 
-
-        Token token = Token.builder().tokenValue(
-                jwtTokenUtil.generateToken(credentialsDto)
-        ).build();
-
-        u.addUserToken(token);
-        tokenRepository.save(token);
-        userRepository.save(u);
-
-        return token;
+        return t;
     }
 
-
+    @Override
+    public Boolean validateJwtToken(String jwt) {
+        return jwtTokenUtil.validateToken(jwt);
+    }
 }

@@ -20,30 +20,31 @@ public class FriendController {
     }
 
     @PutMapping("/send")
-    @PreAuthorize("#senderId == principal")
-    public ResponseEntity sendFriendRequest(@RequestParam("receiverId") Long receiverId, @RequestParam("senderId") Long senderId) {
-        if (friendRequestService.sendFriendRequest(senderId, receiverId)) {
-            return new ResponseEntity(HttpStatus.OK);
+    @PreAuthorize("#sender == principal.username")
+    public ResponseEntity<?> sendFriendRequest(@RequestParam("receiver") String receiver, @RequestParam("sender") String sender) {
+        if (friendRequestService.sendFriendRequest(sender, receiver)) {
+            return new ResponseEntity("Friend request sent", HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Friend request cannot be sent", HttpStatus.BAD_REQUEST);
         }
     }
 
     @PutMapping("/respond")
-    @PreAuthorize("#receiverId == principal")
-    public ResponseEntity respondToFriendRequest(@RequestParam("receiverId") Long receiverId, @RequestParam("senderId") Long senderId, @RequestParam Boolean response) {
-        if (friendRequestService.respondToFriendRequest(receiverId, senderId, response)) {
-            return new ResponseEntity(HttpStatus.OK);
+    @PreAuthorize("#receiver == principal.username")
+    public ResponseEntity<?> respondToFriendRequest(@RequestParam("receiver") String receiver, @RequestParam("sender") String sender,
+                                                 @RequestParam Boolean response) {
+        if (friendRequestService.respondToFriendRequest(receiver, sender, response)) {
+            return new ResponseEntity("Friend request accepted successfully!", HttpStatus.OK);
         } else {
-            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Friend request could not be accepted!", HttpStatus.BAD_REQUEST);
         }
     }
 
-    @GetMapping("/{playerId}")
-    @PreAuthorize("#playerId == principal")
-    public Set<Player> getFriendsOfPlayerPaginated(@PathVariable("playerId") Long playerId,
+    @GetMapping("/{playerName}")
+    @PreAuthorize("#playerName == principal.username")
+    public Set<Player> getFriendsOfPlayerPaginated(@PathVariable("playerName") String playerName,
                                                    @RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
-        return friendRequestService.getFriendsOfPlayer(playerId, pageNo, pageSize);
+        return friendRequestService.getFriendsOfPlayer(playerName, pageNo, pageSize);
     }
 }

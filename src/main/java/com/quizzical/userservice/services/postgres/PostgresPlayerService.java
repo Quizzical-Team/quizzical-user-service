@@ -27,9 +27,10 @@ public class PostgresPlayerService implements PlayerService {
     }
 
     @Override
-    public Set<Player> getPlayersByUsernames(Set<String> usernames) {
-        return playerRepository.findAllByUsernameList(usernames);
+    public List<Player> getPlayersByUsernames(Set<String> usernames) {
+        return playerRepository.findAllByUsernameSet(usernames);
     }
+
 
     @Override
     public Player getUser(Long id) {
@@ -57,13 +58,13 @@ public class PostgresPlayerService implements PlayerService {
     }
 
     @Override
-    public Player updateUser(Long id, Player user) {
+    public Player updateUser(String username, Player user) {
         throw new NotYetImplementedException();
     }
 
     @Override
-    public void deleteUser(Long id) {
-        playerRepository.deleteById(id);
+    public void deleteUser(String username) {
+        playerRepository.deleteByUsername(username);
     }
 
     @Override
@@ -76,10 +77,9 @@ public class PostgresPlayerService implements PlayerService {
         playerRepository.deleteAllById(ids);
     }
 
-
     @Override
-    public Boolean fluctuateMMR(Long id, Integer amount) {
-        Player p = playerRepository.findById(id).orElse(null);
+    public Boolean fluctuateMMR(String username, Integer amount) {
+        Player p = playerRepository.findByUsername(username).orElse(null);
         if (p == null)
             return false;
         p.changeMMRBy(amount);
@@ -88,10 +88,12 @@ public class PostgresPlayerService implements PlayerService {
     }
 
     @Override
-    public Boolean fluctuateMMRBatch(Set<Long> ids, Collection<Integer> amounts) {
-        if (ids.size() != amounts.size())
+    public Boolean fluctuateMMRBatch(Set<String> usernames, Collection<Integer> amounts) {
+        if (usernames.size() != amounts.size())
             return false;
-        List<Player> players = playerRepository.findAllById(ids);
+        List<Player> players = playerRepository.findAllByUsernameSet(usernames);
+        if (usernames.size() != players.size())
+            return false;
         int idx = 0;
         for (Integer amount : amounts) {
             players.get(idx).changeMMRBy(amount);

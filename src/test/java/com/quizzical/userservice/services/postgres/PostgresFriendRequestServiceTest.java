@@ -59,7 +59,7 @@ class PostgresFriendRequestServiceTest {
     void createFriendRequestSuccess() {
         FriendRequest fr = new FriendRequest(p1, p3, false);
 
-        Boolean result = postgresFriendRequestService.sendFriendRequest(p1.getId(), p3.getId());
+        Boolean result = postgresFriendRequestService.sendFriendRequest(p1.getUsername(), p3.getUsername());
 
         FriendRequest saved = friendRepository.findByReceiverAndSender(p3, p1).orElse(null);
 
@@ -73,7 +73,7 @@ class PostgresFriendRequestServiceTest {
     @Test
     void cannotCreateFriendRequestAlreadyExists() {
         FriendRequest fr = new FriendRequest(p1, p2, true);
-        Boolean result = postgresFriendRequestService.sendFriendRequest(p1.getId(), p2.getId());
+        Boolean result = postgresFriendRequestService.sendFriendRequest(p1.getUsername(), p2.getUsername());
 
         FriendRequest saved = friendRepository.findByReceiverAndSender(p2, p1).orElse(null);
 
@@ -85,7 +85,7 @@ class PostgresFriendRequestServiceTest {
     @Test
     void cannotCreateFriendRequestAlreadyFriends() {
         FriendRequest fr = new FriendRequest(p3, p2, false);
-        Boolean result = postgresFriendRequestService.sendFriendRequest(p3.getId(), p2.getId());
+        Boolean result = postgresFriendRequestService.sendFriendRequest(p3.getUsername(), p2.getUsername());
 
         FriendRequest saved = friendRepository.findByReceiverAndSender(p3, p2).orElse(null);
 
@@ -97,7 +97,7 @@ class PostgresFriendRequestServiceTest {
     @Test
     void cannotCreateFriendRequestBetweenSamePlayersOrder() {
         FriendRequest fr = new FriendRequest(p2, p1, true);
-        Boolean result = postgresFriendRequestService.sendFriendRequest(p2.getId(), p1.getId());
+        Boolean result = postgresFriendRequestService.sendFriendRequest(p2.getUsername(), p1.getUsername());
 
         FriendRequest saved = friendRepository.findByReceiverAndSender(p2, p1).orElse(null);
 
@@ -114,7 +114,7 @@ class PostgresFriendRequestServiceTest {
         FriendRequest fr = friendRepository.findByReceiverAndSender(p3, p2).orElse(null);
         assertNotNull(fr);
 
-        Boolean result = postgresFriendRequestService.respondToFriendRequest(p3.getId(), p2.getId(), false);
+        Boolean result = postgresFriendRequestService.respondToFriendRequest(p3.getUsername(), p2.getUsername(), false);
         assertTrue(result);
 
         fr = friendRepository.findByReceiverAndSender(p3, p2).orElse(null);
@@ -128,7 +128,7 @@ class PostgresFriendRequestServiceTest {
         FriendRequest fr = friendRepository.findByReceiverAndSender(p3, p2).orElse(null);
         assertNotNull(fr);
 
-        Boolean result = postgresFriendRequestService.respondToFriendRequest(p3.getId(), p2.getId(), response);
+        Boolean result = postgresFriendRequestService.respondToFriendRequest(p3.getUsername(), p2.getUsername(), response);
         assertTrue(result);
 
         fr = friendRepository.findByReceiverAndSender(p3, p2).orElse(null);
@@ -140,7 +140,7 @@ class PostgresFriendRequestServiceTest {
 
     @Test
     void respondToFriendRequestNoRequestFound() {
-        Boolean result = postgresFriendRequestService.respondToFriendRequest(p3.getId(), p1.getId(), true);
+        Boolean result = postgresFriendRequestService.respondToFriendRequest(p3.getUsername(), p1.getUsername(), true);
         assertFalse(result);
 
         assertEquals(p1.getFriends().size(), 0);

@@ -8,8 +8,12 @@ import java.util.Set;
 
 public interface PlayerService extends AbstractUserService<Player> {
     Set<Player> searchPlayersStartingWith(String username);
-    Set<Player> getPlayersByUsernames(Set<String> usernames);
-    Boolean fluctuateMMR(Long id, Integer amount);
-    Boolean fluctuateMMRBatch(Set<Long> ids, Collection<Integer> amounts);
+
+    List<Player> getPlayersByUsernames(Set<String> usernames);
+
+    Boolean fluctuateMMR(String username, Integer amount);
+
+    Boolean fluctuateMMRBatch(Set<String> usernames, Collection<Integer> amounts);
+
     void banUser(Long id);
 }

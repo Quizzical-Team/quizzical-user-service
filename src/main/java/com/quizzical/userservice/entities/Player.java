@@ -20,7 +20,7 @@ public class Player extends User {
     private Integer matchmakingRatio = GamePropertiesConfig.startingMatchmakingRatio;
 
     public Player(String username, String email, String password) {
-        super(username, email, password);
+        super(username, email, password, RoleType.ROLE_PLAYER);
     }
 
     @ManyToMany
@@ -44,8 +44,7 @@ public class Player extends User {
     // todo: match history
 
     public void changeMMRBy(Integer amount) {
-        // clamp the MMR between max and min
-        this.matchmakingRatio = Math.max(
+        this.matchmakingRatio = Math.max( // clamp
                 GamePropertiesConfig.minimumMatchmakingRatio,
                 Math.min(GamePropertiesConfig.maximumMatchmakingRatio, matchmakingRatio + amount));
     }

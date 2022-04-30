@@ -1,57 +1,40 @@
 package com.quizzical.userservice.configuration;
 
-import com.quizzical.userservice.repositories.UserRepository;
-import com.quizzical.userservice.security.ApiKeyFilter;
-import com.quizzical.userservice.security.UsernamePasswordAuthenticationProvider;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
-@ComponentScan("com.quizzical.userservice.repositories")
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
-    private final UserRepository userRepository;
 
-    public WebSecurityConfig(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    private final UserDetailsService userDetailsService;
+
+    public WebSecurityConfig(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
     }
 
     @Override
-    protected void configure(AuthenticationManagerBuilder auth) {
-        auth.authenticationProvider(authenticationProvider());
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        // ! Temporary we should not disable cors and csrf.
-        // else does not work on Postman.
         http.cors().and().csrf().disable();
 
         http.authorizeRequests()
-
-                .antMatchers(HttpMethod.GET).permitAll()
-//                .antMatchers(HttpMethod.POST).authenticated()
-//                .antMatchers(HttpMethod.DELETE).authenticated()
-                .antMatchers(HttpMethod.PUT, "/api/**/mmr").permitAll()
-                .antMatchers("**/auth/**").permitAll()
-                .and().addFilterBefore(new ApiKeyFilter(), UsernamePasswordAuthenticationFilter.class)
-                .formLogin().and()
-                .httpBasic();
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider() {
-        return new UsernamePasswordAuthenticationProvider(passwordEncoder(), userRepository);
+//                .antMatchers("**/players/**").authenticated()
+                .antMatchers("**/players/**").permitAll()
+//                .antMatchers("**/friends/**").authenticated()
+                .antMatchers("**/friends/**").permitAll()
+                .antMatchers("**/auth/**").permitAll();
     }
 
     @Bean

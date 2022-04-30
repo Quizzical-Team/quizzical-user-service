@@ -5,8 +5,8 @@ import com.quizzical.userservice.entities.Player;
 import java.util.Set;
 
 public interface FriendRequestService {
-    Boolean sendFriendRequest(Long fromPlayerId, Long targetPlayerId);
-    Boolean respondToFriendRequest(Long targetPlayerId, Long fromPlayerId, Boolean response);
+    Boolean sendFriendRequest(String fromPlayerId, String targetPlayerId);
+    Boolean respondToFriendRequest(String targetPlayerId, String fromPlayerId, Boolean response);
 
-    Set<Player> getFriendsOfPlayer(Long playerId, Integer pageNo, Integer pageSize);
+    Set<Player> getFriendsOfPlayer(String playerName, Integer pageNo, Integer pageSize);
 }

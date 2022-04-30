@@ -15,5 +15,10 @@ public interface PlayerRepository extends AbstractUserRepository<Player> {
 //    Set<Player>  findFriendsOfPlayerByLikeUsername(Long userId, String username);
 
     @Query("FROM Player p WHERE p.username in :usernames")
-    Set<Player> findAllByUsernameList(Set<String> usernames);
+    List<Player> findAllByUsernameList(List<String> usernames);
+
+    @Query("FROM Player p WHERE p.username in :usernames")
+    List<Player> findAllByUsernameSet(Set<String> usernames);
+
+    void deleteByUsername(String username);
 }

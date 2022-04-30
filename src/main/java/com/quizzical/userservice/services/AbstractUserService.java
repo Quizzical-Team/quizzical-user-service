@@ -1,5 +1,6 @@
 package com.quizzical.userservice.services;
 
+import com.quizzical.userservice.entities.Player;
 import com.quizzical.userservice.entities.User;
 
 import java.util.List;
@@ -12,8 +13,8 @@ public interface AbstractUserService<T extends User> {
 
     // non-safe ops
     void addUser(T user);
-    T updateUser(Long id, T user);
-    void deleteUser(Long id);
+    T updateUser(String id, Player user);
+    void deleteUser(String id);
 
     // batch jobs
     List<T> addUsers(List<T> users);

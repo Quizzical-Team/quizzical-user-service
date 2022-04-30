@@ -23,12 +23,12 @@ public class PostgresFriendRequestService implements FriendRequestService {
     }
 
     @Override
-    public Boolean sendFriendRequest(Long fromPlayerId, Long targetPlayerId) {
-        if (fromPlayerId.equals(targetPlayerId))
+    public Boolean sendFriendRequest(String fromPlayerName, String targetPlayerName) {
+        if (fromPlayerName.equals(targetPlayerName))
             return false;
 
-        Long[] ids = new Long[] { fromPlayerId, targetPlayerId };
-        List<Player> players = playerRepository.findAllById(Arrays.asList(ids));
+        String[] usernames = new String[] { fromPlayerName, targetPlayerName };
+        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(usernames));
 
         if (players.size() < 2)
             return false;
@@ -41,15 +41,15 @@ public class PostgresFriendRequestService implements FriendRequestService {
     }
 
     @Override
-    public Boolean respondToFriendRequest(Long targetPlayerId, Long fromPlayerId, Boolean response) {
+    public Boolean respondToFriendRequest(String targetPlayerName, String fromPlayerName, Boolean response) {
         // check if same players
         // check if both players exist
         // check if players have friendship
-        if (targetPlayerId.equals(fromPlayerId))
+        if ( targetPlayerName.equals( fromPlayerName))
             return false;
 
-        Long[] ids = new Long[]{targetPlayerId, fromPlayerId};
-        List<Player> players = playerRepository.findAllById(Arrays.asList(ids));
+        String[] usernames = new String[]{ targetPlayerName,  fromPlayerName};
+        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(usernames));
 
         if (players.size() < 2)
             return false;
@@ -73,8 +73,8 @@ public class PostgresFriendRequestService implements FriendRequestService {
     }
 
     @Override
-    public Set<Player> getFriendsOfPlayer(Long playerId, Integer pageNo, Integer pageSize) {
-        return playerRepository.findById(playerId).orElseThrow(UserNotFoundException::new).getFriends();
+    public Set<Player> getFriendsOfPlayer(String playerName, Integer pageNo, Integer pageSize) {
+        return playerRepository.findByUsername(playerName).orElseThrow(UserNotFoundException::new).getFriends();
     }
 
     private Boolean doesFriendRequestExist(Player p1, Player p2) {

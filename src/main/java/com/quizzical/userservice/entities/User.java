@@ -5,10 +5,11 @@ import lombok.*;
 import javax.persistence.*;
 import java.util.*;
 
-@Entity
-@Table(name = "users")
-@Inheritance(strategy = InheritanceType.JOINED)
+//@Entity
+//@Table(name = "users")
+//@Inheritance(strategy = InheritanceType.JOINED)
 
+@MappedSuperclass
 @Getter
 @Setter
 @ToString
@@ -28,15 +29,17 @@ public class User extends BaseEntity {
     @Column(name = "is_banned")
     private Boolean isBanned = false;
 
-    @OneToMany(
-            fetch = FetchType.EAGER,
-            cascade = CascadeType.REMOVE)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
     private Set<Token> tokens = new HashSet<>();
 
-    public User(String username, String email, String password) {
+    @Column(name = "role")
+    private RoleType role;
+
+    public User(String username, String email, String password, RoleType role) {
         this.username = username;
         this.email = email;
         this.password = password;
+        this.role = role;
     }
 
     public void addUserToken(Token token) {
