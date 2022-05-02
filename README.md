@@ -5,6 +5,9 @@ these users include Players and Moderators for now.
 ### Calling the API
 Use the api key by adding x-api-key header to your http requests.
 
+### Load Database
+See bootstrap.LoadDatabase for sample users
+
 ### Running the service
 Add `-Dspring.profiles.active=dev` to VM arguments while creating dev run config (same with prod).
 Add the following environment variables to your run config

@@ -27,6 +27,6 @@ public class AuthenticationController {
 
     @PostMapping("/validateToken/{token}")
     public ResponseEntity<?> validateToken(@PathVariable("token") String token) {
-        return authenticationService.validateJwtToken(token) ? ResponseEntity.ok("Success") : ResponseEntity.ok("Failure");
+        return authenticationService.validateJwtToken(token) ? ResponseEntity.ok(true) : ResponseEntity.ok(false);
     }
 }
