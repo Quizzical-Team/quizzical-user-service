@@ -1,11 +1,14 @@
 package com.quizzical.userservice.services.postgres;
 
 import com.quizzical.userservice.entities.Player;
+import com.quizzical.userservice.entities.RoleType;
 import com.quizzical.userservice.exceptions.UserNotFoundException;
 import com.quizzical.userservice.repositories.PlayerRepository;
 import com.quizzical.userservice.services.PlayerService;
 import org.hibernate.cfg.NotYetImplementedException;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -31,12 +34,6 @@ public class PostgresPlayerService implements PlayerService {
         return playerRepository.findAllByUsernameSet(usernames);
     }
 
-
-    @Override
-    public Player getUser(Long id) {
-        return playerRepository.findById(id).orElseThrow(UserNotFoundException::new);
-    }
-
     @Override
     public Player getUser(String username) {
         return playerRepository.findByUsername(username).orElseThrow(UserNotFoundException::new);
@@ -54,8 +51,14 @@ public class PostgresPlayerService implements PlayerService {
 
     @Override
     public void addUser(Player user) {
-        playerRepository.save(user);
-    }
+        try {
+            user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+            user.setRole(RoleType.ROLE_PLAYER);
+            playerRepository.save(user);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+}
 
     @Override
     public Player updateUser(String username, Player user) {
@@ -65,16 +68,6 @@ public class PostgresPlayerService implements PlayerService {
     @Override
     public void deleteUser(String username) {
         playerRepository.deleteByUsername(username);
-    }
-
-    @Override
-    public List<Player> addUsers(List<Player> users) {
-        return playerRepository.saveAll(users);
-    }
-
-    @Override
-    public void deleteUsers(List<Long> ids) {
-        playerRepository.deleteAllById(ids);
     }
 
     @Override

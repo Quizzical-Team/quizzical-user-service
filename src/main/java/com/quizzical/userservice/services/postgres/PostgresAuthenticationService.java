@@ -26,18 +26,23 @@ public class PostgresAuthenticationService implements AuthenticationService {
 
     @Override
     public Token loginWithUsernamePassword(String username, String password) {
-        Player p = playerRepository.findByUsername(username).orElseThrow(RuntimeException::new);
+        try {
+            Player p = playerRepository.findByUsername(username).orElseThrow(RuntimeException::new);
 
-        if (!passwordEncoder.matches(password, p.getPassword())) {
+            if (!passwordEncoder.matches(password, p.getPassword()))
+                throw new RuntimeException();
+
+            Token t = new Token(jwtTokenUtil.generateToken(username));
+
+            tokenRepository.save(t);
+            p.addUserToken(t);
+            playerRepository.save(p);
+
+            return t;
+        } catch (Exception e) {
             return null;
         }
-        Token t = new Token(jwtTokenUtil.generateToken(username));
 
-        tokenRepository.save(t);
-        p.addUserToken(t);
-        playerRepository.save(p);
-
-        return t;
     }
 
     @Override

@@ -2,6 +2,7 @@ package com.quizzical.userservice.controllers;
 
 import com.quizzical.userservice.entities.Player;
 import com.quizzical.userservice.services.PlayerService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,6 +14,7 @@ import java.util.Set;
 
 @RequestMapping("/api/v1/players")
 @RestController
+@Slf4j
 public class PlayerController {
     private final PlayerService playerService;
 
@@ -53,6 +55,7 @@ public class PlayerController {
 
     @PostMapping({""})
     public ResponseEntity<Player> create(@RequestBody Player player) {
+        log.info(player.getUsername());
         playerService.addUser(player);
         return new ResponseEntity<>(player, HttpStatus.CREATED);
     }
