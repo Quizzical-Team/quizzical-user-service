@@ -31,20 +31,23 @@ public class LoadDatabase {
 
     @EventListener(ApplicationReadyEvent.class)
     public void runAfterStartup() {
-        this.playerRepository.saveAll(
-                new ArrayList<>() {{
-                    add(new Player(
-                            "torvalds",
-                            "torvalds@gmail.com",
-                            new BCryptPasswordEncoder().encode("123123")));
-                    add(new Player("tuzgosh",
-                            "tuzgosh@gmail.com",
-                            new BCryptPasswordEncoder().encode("123123")));
-                    add(new Player("yeet",
-                            "yeet@gmail.com",
-                            new BCryptPasswordEncoder().encode("123123")));
-                }}
-        );
+        ArrayList<Player> players = new ArrayList<>() {{
+            add(new Player(
+                    "torvalds",
+                    "torvalds@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123")));
+            add(new Player("tuzgosh",
+                    "tuzgosh@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123")));
+            add(new Player("yeet",
+                    "yeet@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123")));
+        }};
+
+        players.get(0).getFriends().add(players.get(1));
+        players.get(1).getFriends().add(players.get(0));
+
+        this.playerRepository.saveAll(players);
 
         Player p1 = playerRepository.findByUsername("torvalds").orElseThrow(UserNotFoundException::new);
         Player p2 = playerRepository.findByUsername("yeet").orElseThrow(UserNotFoundException::new);
