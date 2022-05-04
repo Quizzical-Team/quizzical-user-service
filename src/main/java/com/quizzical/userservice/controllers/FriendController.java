@@ -1,5 +1,6 @@
 package com.quizzical.userservice.controllers;
 
+import com.quizzical.userservice.entities.FriendRequest;
 import com.quizzical.userservice.entities.Player;
 import com.quizzical.userservice.services.FriendRequestService;
 import org.springframework.http.HttpStatus;
@@ -46,5 +47,14 @@ public class FriendController {
                                                    @RequestParam(defaultValue = "0") Integer pageNo,
                                                    @RequestParam(defaultValue = "10") Integer pageSize) {
         return friendRequestService.getFriendsOfPlayer(playerName, pageNo, pageSize);
+    }
+
+    @GetMapping("/requests/{playerName}")
+    @PreAuthorize("#playerName == principal.username")
+    public Set<FriendRequest> getFriendRequestsOfPlayerPaginated(
+            @PathVariable("playerName") String playerName,
+            @RequestParam(defaultValue = "0") Integer pageNo,
+            @RequestParam(defaultValue = "10") Integer pageSize) {
+        return friendRequestService.getFriendRequestsOfPlayer(playerName, pageNo, pageSize);
     }
 }

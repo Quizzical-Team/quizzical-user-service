@@ -77,6 +77,11 @@ public class PostgresFriendRequestService implements FriendRequestService {
         return playerRepository.findByUsername(playerName).orElseThrow(UserNotFoundException::new).getFriends();
     }
 
+    @Override
+    public Set<FriendRequest> getFriendRequestsOfPlayer(String playerName, Integer pageNo, Integer pageSize) {
+        return friendRequestRepository.findByReceiver(playerName);
+    }
+
     private Boolean doesFriendRequestExist(Player p1, Player p2) {
         return friendRequestRepository.existsByReceiverAndSender(p1, p2)
                 || friendRequestRepository.existsByReceiverAndSender(p2, p1);
