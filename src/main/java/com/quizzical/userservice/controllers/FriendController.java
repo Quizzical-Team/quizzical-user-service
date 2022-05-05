@@ -49,6 +49,16 @@ public class FriendController {
         return friendRequestService.getFriendsOfPlayer(playerName, pageNo, pageSize);
     }
 
+    @DeleteMapping("/{playerName}")
+    @PreAuthorize("#playerName == principal.username")
+    public ResponseEntity<?> deleteFriendship(@PathVariable String playerName, @RequestParam String target) {
+        if (friendRequestService.removeExistingFriend(playerName, target)) {
+            return new ResponseEntity<>("Success", HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>("Failure", HttpStatus.BAD_REQUEST);
+        }
+    }
+
     @GetMapping("/requests/{playerName}")
     @PreAuthorize("#playerName == principal.username")
     public Set<FriendRequest> getFriendRequestsOfPlayerPaginated(

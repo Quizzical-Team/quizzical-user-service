@@ -28,7 +28,7 @@ public class PostgresFriendRequestService implements FriendRequestService {
             return false;
 
         String[] usernames = new String[] { sender, receiver };
-        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(usernames));
+        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(sender, receiver));
 
         if (players.size() < 2)
             return false;
@@ -86,6 +86,23 @@ public class PostgresFriendRequestService implements FriendRequestService {
     @Override
     public Set<FriendRequest> getFriendRequestsOfPlayer(String playerName, Integer pageNo, Integer pageSize) {
         return friendRequestRepository.findByReceiver(playerName);
+    }
+
+    @Override
+    public Boolean removeExistingFriend(String playerName, String friendToRemove) {
+        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(playerName, friendToRemove));
+        if (players.get(0).getFriends().contains(players.get(1))) {
+            players.get(0).getFriends().remove(players.get(1));
+            players.get(1).getFriends().remove(players.get(0));
+
+            players.get(0).getFriendOf().remove(players.get(1));
+            players.get(1).getFriendOf().remove(players.get(0));
+
+            playerRepository.saveAll(players);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     private Boolean doesFriendRequestExist(Player p1, Player p2) {

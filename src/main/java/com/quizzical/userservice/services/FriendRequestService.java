@@ -12,4 +12,6 @@ public interface FriendRequestService {
     Set<Player> getFriendsOfPlayer(String playerName, Integer pageNo, Integer pageSize);
 
     Set<FriendRequest> getFriendRequestsOfPlayer(String playerName, Integer pageNo, Integer pageSize);
+
+    Boolean removeExistingFriend(String playerName, String friendToRemove);
 }
