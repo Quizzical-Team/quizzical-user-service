@@ -23,7 +23,7 @@ public class FriendController {
     @PutMapping("/send")
     @PreAuthorize("#sender == principal.username")
     public ResponseEntity<?> sendFriendRequest(@RequestParam("receiver") String receiver, @RequestParam("sender") String sender) {
-        if (friendRequestService.sendFriendRequest(sender, receiver)) {
+        if (friendRequestService.sendFriendRequest(receiver, sender)) {
             return new ResponseEntity("Friend request sent", HttpStatus.OK);
         } else {
             return new ResponseEntity("Friend request cannot be sent", HttpStatus.BAD_REQUEST);

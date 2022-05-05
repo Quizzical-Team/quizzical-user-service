@@ -23,11 +23,11 @@ public class PostgresFriendRequestService implements FriendRequestService {
     }
 
     @Override
-    public Boolean sendFriendRequest(String fromPlayerName, String targetPlayerName) {
-        if (fromPlayerName.equals(targetPlayerName))
+    public Boolean sendFriendRequest(String sender, String receiver) {
+        if (sender.equals(receiver))
             return false;
 
-        String[] usernames = new String[] { fromPlayerName, targetPlayerName };
+        String[] usernames = new String[] { sender, receiver };
         List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(usernames));
 
         if (players.size() < 2)
@@ -36,36 +36,42 @@ public class PostgresFriendRequestService implements FriendRequestService {
         if (doesFriendRequestExist(players.get(0), players.get(1)))
             return false;
 
-        friendRequestRepository.save(new FriendRequest(players.get(0), players.get(1), false));
+        friendRequestRepository.save(new FriendRequest(players.get(0), players.get(1), null));
         return true;
     }
 
     @Override
-    public Boolean respondToFriendRequest(String targetPlayerName, String fromPlayerName, Boolean response) {
+    public Boolean respondToFriendRequest(String receiver, String sender, Boolean response) {
         // check if same players
         // check if both players exist
         // check if players have friendship
-        if ( targetPlayerName.equals( fromPlayerName))
+        if (receiver.equals(sender)) {
+            System.out.println("ZORT 1");
             return false;
+        }
 
-        String[] usernames = new String[]{ targetPlayerName,  fromPlayerName};
-        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(usernames));
+        Player pSender = playerRepository.findByUsername(sender).orElse(null);
+        Player pReceiver = playerRepository.findByUsername(receiver).orElse(null);
 
-        if (players.size() < 2)
+        if (pSender == null || pReceiver == null) {
+            System.out.println("ZORT 2");
             return false;
+        }
 
-        FriendRequest fr = friendRequestRepository.findByReceiverAndSender(players.get(1), players.get(0))
+        FriendRequest fr = friendRequestRepository.findByReceiverAndSender(pReceiver, pSender)
                 .orElse(null);
-        if (fr == null)
+        if (fr == null) {
+            System.out.println(receiver + pReceiver.getUsername() + " " + sender + " ZORT 3");
             return false;
+        }
 
         if (response) {
-            fr.setAccepted(true);
-            friendRequestRepository.save(fr);
 
-            players.get(0).getFriends().add(players.get(1));
-            players.get(1).getFriends().add(players.get(0));
-            playerRepository.saveAll(players);
+            pSender.getFriends().add(pReceiver);
+            pReceiver.getFriends().add(pSender);
+            playerRepository.saveAll(Arrays.asList(pReceiver, pSender));
+            friendRequestRepository.delete(fr);
+
         } else {
             friendRequestRepository.delete(fr);
         }

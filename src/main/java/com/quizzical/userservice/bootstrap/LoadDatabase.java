@@ -54,7 +54,7 @@ public class LoadDatabase {
 
         this.friendRepository.saveAll(
                new ArrayList<>() {{
-                   add(FriendRequest.builder().sender(p1).receiver(p2).build());
+                   add(FriendRequest.builder().sender(p2).receiver(p1).build());
                }}
         );
 
