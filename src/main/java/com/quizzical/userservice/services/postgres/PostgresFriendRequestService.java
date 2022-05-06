@@ -27,18 +27,18 @@ public class PostgresFriendRequestService implements FriendRequestService {
         if (sender.equals(receiver))
             return false;
 
-        //String[] usernames = new String[] { sender, receiver };
         Player pSender = playerRepository.findByUsername(sender).orElse(null);
         Player pReceiver = playerRepository.findByUsername(receiver).orElse(null);
-        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(pSender, pReceiver)));
 
-        if (players.size() < 2)
+        if (pSender == null || pReceiver == null) {
+            System.out.println("ZORT 2");
+            return false;
+        }
+
+        if (doesFriendRequestExist(pSender, pReceiver))
             return false;
 
-        if (doesFriendRequestExist(players.get(0), players.get(1)))
-            return false;
-
-        friendRequestRepository.save(new FriendRequest(players.get(0), players.get(1), null));
+        friendRequestRepository.save(new FriendRequest(pReceiver, pSender, null));
         return true;
     }
 
