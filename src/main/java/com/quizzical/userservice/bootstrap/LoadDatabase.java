@@ -35,13 +35,67 @@ public class LoadDatabase {
             add(new Player(
                     "torvalds",
                     "torvalds@gmail.com",
-                    new BCryptPasswordEncoder().encode("123123")));
+                    new BCryptPasswordEncoder().encode("123123"),
+                    1700
+            ));
             add(new Player("tuzgosh",
                     "tuzgosh@gmail.com",
-                    new BCryptPasswordEncoder().encode("123123")));
+                    new BCryptPasswordEncoder().encode("123123"),
+                    400
+            ));
             add(new Player("yeet",
                     "yeet@gmail.com",
-                    new BCryptPasswordEncoder().encode("123123")));
+                    new BCryptPasswordEncoder().encode("123123"),
+                    500
+            ));
+            add(new Player(
+                    "a",
+                    "a@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    600
+            ));
+            add(new Player("b",
+                    "b@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    700
+            ));
+            add(new Player("c",
+                    "c@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    800
+            ));
+            add(new Player(
+                    "z",
+                    "z@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    900
+            ));
+            add(new Player("d",
+                    "d@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    1000
+            ));
+            add(new Player("e",
+                    "e@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    1100
+            ));
+            add(new Player(
+                    "f",
+                    "f@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    1200
+            ));
+            add(new Player("g",
+                    "g@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    1300
+            ));
+            add(new Player("h",
+                    "i@gmail.com",
+                    new BCryptPasswordEncoder().encode("123123"),
+                    1400
+            ));
         }};
 
         players.get(0).getFriends().add(players.get(1));
