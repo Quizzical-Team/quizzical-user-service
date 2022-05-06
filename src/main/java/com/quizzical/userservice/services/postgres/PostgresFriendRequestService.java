@@ -30,7 +30,7 @@ public class PostgresFriendRequestService implements FriendRequestService {
         //String[] usernames = new String[] { sender, receiver };
         Player pSender = playerRepository.findByUsername(sender).orElse(null);
         Player pReceiver = playerRepository.findByUsername(receiver).orElse(null);
-        List<Player> players = playerRepository.findAllByUsernameList(pSender, pReceiver));
+        List<Player> players = playerRepository.findAllByUsernameList(Arrays.asList(pSender, pReceiver)));
 
         if (players.size() < 2)
             return false;
