@@ -71,6 +71,11 @@ public class PostgresPlayerService implements PlayerService {
     }
 
     @Override
+    public Set<Player> getTop10ByMmr() {
+        return playerRepository.getTopPlayersByMmr();
+    }
+
+    @Override
     public Boolean fluctuateMMR(String username, Integer amount) {
         Player p = playerRepository.findByUsername(username).orElse(null);
         if (p == null)

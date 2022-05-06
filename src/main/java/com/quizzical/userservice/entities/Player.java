@@ -23,6 +23,11 @@ public class Player extends User {
         super(username, email, password, RoleType.ROLE_PLAYER);
     }
 
+    public Player(String username, String email, String password, Integer matchmakingRatio) {
+        super(username, email, password, RoleType.ROLE_PLAYER);
+        this.matchmakingRatio = matchmakingRatio;
+    }
+
     @ManyToMany
     @JoinTable(
             name = "friends",

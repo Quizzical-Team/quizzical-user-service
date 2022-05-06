@@ -28,6 +28,11 @@ public class PlayerController {
         return playerService.getUser(playerName);
     }
 
+    @GetMapping("/leaderboard")
+    public Set<Player> getTop10ByMmr() {
+        return playerService.getTop10ByMmr();
+    }
+
     @GetMapping("/search")
     public Set<Player> searchByUsername(@RequestParam("searchParam") String searchParam) {
         return playerService.searchPlayersStartingWith(searchParam);

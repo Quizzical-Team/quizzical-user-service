@@ -21,4 +21,7 @@ public interface PlayerRepository extends AbstractUserRepository<Player> {
     List<Player> findAllByUsernameSet(Set<String> usernames);
 
     void deleteByUsername(String username);
+
+    @Query(value = "SELECT * FROM PLAYERS ORDER BY matchmaking_ratio DESC LIMIT 10", nativeQuery = true)
+    Set<Player> getTopPlayersByMmr();
 }
